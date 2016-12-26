@@ -124,6 +124,19 @@ class LibJpegTurboConan(ConanFile):
         self.copy("*jpeg*.so.*", dst="lib", src=".", keep_path=False, links=True)
         self.copy("*jpeg*.dylib*", dst="lib", src=".", keep_path=False, links=True)
 
+        # Remove the -static suffix of libs when compiled on MSVC
+        if self.settings.compiler == "Visual Studio" and not self.options.shared:
+            static_name = os.path.join(self.package_folder, "lib", "jpeg-static.lib")
+            corrected_name = os.path.join(self.package_folder, "lib", "jpeg.lib")
+            self.output.info("Renaming %s to %s" % (static_name, corrected_name))
+            os.rename(static_name, corrected_name)
+
+            if self.options.with_turbojpeg:
+                static_name = os.path.join(self.package_folder, "lib", "turbojpeg-static.lib")
+                corrected_name = os.path.join(self.package_folder, "lib", "turbojpeg.lib")
+                self.output.info("Renaming %s to %s" % (static_name, corrected_name))
+                os.rename(static_name, corrected_name)
+
         # Executables
         ext = ".exe" if self.settings.os == "Windows" else ""
         self.copy("*cjpeg%s" % ext, dst="bin", src=".", keep_path=False)

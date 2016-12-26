@@ -48,6 +48,10 @@ class LibJpegTurboConan(ConanFile):
             tools.replace_in_file("libjpeg-turbo-%s/CMakeLists.txt" % self.version,
                                   'string(REGEX REPLACE "/MD" "/MT" ${var} "${${var}}")', '')
 
+        if self.settings.os == "Macos":
+            tools.replace_in_file("libjpeg-turbo-%s/configure" % self.version, '-install_name \$rpath/\$soname',
+                                  '-install_name \$soname')
+
     def build(self):
         if self.settings.os == "Windows":
             cmake = CMake(self.settings)

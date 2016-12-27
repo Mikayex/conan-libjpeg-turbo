@@ -47,6 +47,8 @@ class LibJpegTurboConan(ConanFile):
     conan_basic_setup()""")
             tools.replace_in_file("libjpeg-turbo-%s/CMakeLists.txt" % self.version,
                                   'string(REGEX REPLACE "/MD" "/MT" ${var} "${${var}}")', '')
+            tools.replace_in_file("libjpeg-turbo-%s/sharedlib/CMakeLists.txt" % self.version,
+                                  'string(REGEX REPLACE "/MT" "/MD" ${var} "${${var}}")', '')
 
         if self.settings.os == "Macos":
             tools.replace_in_file("libjpeg-turbo-%s/configure" % self.version, '-install_name \$rpath/\$soname',
